@@ -1,0 +1,22 @@
+{
+  "name": "mac-cal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --config webpack.config.js",
+    "format": "prettier --write \"src/**/*.{html,css,js}\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "Generate an .ics (calendar) file using the details on your MyTimetable page!",
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "webpack": "^5.100.2",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "copy-webpack-plugin": "^13.0.0",
+    "transform-json-webpack-plugin": "^0.0.2"
+  }
+}

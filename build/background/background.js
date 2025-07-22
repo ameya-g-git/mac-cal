@@ -1,0 +1,2 @@
+browser.runtime.onMessage.addListener(e=>{console.log(e),tabId=0,e.nameFormat&&async function(){return browser.tabs.query({active:!0,currentWindow:!0})}().then(e=>tabId=e[0].id).then(t=>chrome.tabs.sendMessage(t,{nameFormat:e.nameFormat})).then(()=>console.log("sent message")).catch(t=>{console.log("content script not installed, installing and sending message"),chrome.scripting.executeScript({target:{tabId},files:["../content/content.js"]}),setTimeout(()=>{chrome.tabs.sendMessage(tabId,{...e})},100)})});
+//# sourceMappingURL=background.js.map
