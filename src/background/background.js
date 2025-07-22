@@ -1,8 +1,8 @@
 async function getCurrentTab() {
-  return browser.tabs.query({ active: true, currentWindow: true });
+  return chrome.tabs.query({ active: true, currentWindow: true });
 }
 
-browser.runtime.onMessage.addListener((req) => {
+chrome.runtime.onMessage.addListener((req) => {
   console.log(req);
 
   tabId = 0;
