@@ -5,14 +5,6 @@ export default function parse() {
 
   function legendTimeToRecur(legTime, year) {
     const [days, time] = legTime.split(": ").map((t) => t.trim());
-
-    /* 
-        Tue, Thu May 5 - Jun 13: 1:00 PM to 4:00 PM
-        Tue, Thu Jun 16 - Jun 20: 1:00 PM to 4:00 PM
-
-        Tue, Thu : 7:00 PM to 9:00 PM
-        */
-
     let begin, end;
 
     const dayArray = days.split(", ").map((d) => d.toUpperCase());
@@ -43,22 +35,6 @@ export default function parse() {
   }
 
   function parseRooms(roomElem) {
-    /*
-        <span class="location_block" title="Building and Room Number">
-            McMaster - ONLINE
-            <br>
-        </span>
-
-        <span class="location_block" title="Building and Room Number">
-            Tue, Thu May 5 - Jun 13: 1:00 PM to 4:00 PM
-            <span class="legend_multi_loc">L.R. Wilson Hall - LRW_1055</span>
-            <br />
-            Tue, Thu Jun 16 - Jun 20: 1:00 PM to 4:00 PM
-            <span class="legend_multi_loc">Burke Science Bldg. - BSB_120</span>
-            <br />
-        </span>
-        */
-
     let rooms;
 
     if (roomElem.querySelector(".legend_multi_loc")) {
@@ -127,10 +103,6 @@ export default function parse() {
     } else if (classOrder.length == 3) {
       classTimesOrder = classTimes.map((cls) => [cls]);
     }
-
-    // console.log(courseTitle.textContent);
-    // console.log(roomOrder);
-    // console.log(classTimesOrder);
 
     classTimesOrder.forEach((times, i) => {
       const [classType, classSec] = classOrder[i].split(" ");

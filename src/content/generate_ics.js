@@ -138,21 +138,22 @@ export function generateICS(nameFormat, includeLoc) {
 
   for (const cls of classes) {
     /* 
-            {
-                "begin": "2025-05-05T04:00:00.000Z",
-                "end": "2025-06-13T04:00:00.000Z",
-                "name": "MEDIAART 1A03",
-                "classType": "LEC",
-                "classSec": "C01",
-                "prof": "Jessica Rodriguez Cabrera",
-                "loc": "LRW 1055",
-                "freq": {
-                    "days": ["TU", "TH"],
-                    "startTime": "1:00 PM",
-                    "endTime": "4:00 PM"
-                }
+        example of the data stored in a single `cls`, for ease of development
+        {
+            "begin": "2025-05-05T04:00:00.000Z",
+            "end": "2025-06-13T04:00:00.000Z",
+            "name": "MEDIAART 1A03",
+            "classType": "LEC",
+            "classSec": "C01",
+            "prof": "Jessica Rodriguez Cabrera",
+            "loc": "LRW 1055",
+            "freq": {
+                "days": ["TU", "TH"],
+                "startTime": "1:00 PM",
+                "endTime": "4:00 PM"
             }
-        */
+        }
+    */
     const { begin, end, name, classType, classSec, prof, loc, freq } = cls;
 
     begin.setDate(begin.getDate() - 1); // subtract 1 day so that school begins after every date in `dates`
