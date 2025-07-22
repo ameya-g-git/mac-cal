@@ -15,6 +15,6 @@ import { generateICS } from "./generate_ics.js";
     return true;
   }
 
-  if (!browser.runtime.onMessage.hasListener(handleMessage))
-    browser.runtime.onMessage.addListener(handleMessage);
+  if (!chrome.runtime.onMessage.hasListener(handleMessage))
+    chrome.runtime.onMessage.addListener(handleMessage);
 })();

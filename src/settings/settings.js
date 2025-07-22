@@ -1,5 +1,5 @@
 async function verifyURL() {
-  await browser.tabs
+  await chrome.tabs
     .query({
       active: true,
       currentWindow: true,
@@ -106,21 +106,13 @@ window.addEventListener("pageshow", () => {
     }
   });
 
-  // TODO; fuck you fuck this fucking stupid piece of shit fucking javascript god i hatge this language and i hate everything about it
-  // why the fuck are errors so fucking vague and they don't give any information abotu the actual fucking issue fucking god
-  // nothing works and i donte ven have version control to revert to a version that works fuck this stupid fucking extension
-  // fuck you fuck yoyu fuck youi
-
-  // okay. i've restored it back to before i decided to delve into the hell of the sendMessage api.
-  // i'm done for today. good fucking lord. least enjoyable programming session. sob
-
   document.getElementById("popup-content").addEventListener("submit", (e) => {
     console.log("sun,to");
     tabId = 0;
-    browser.tabs
+    chrome.tabs
       .query({ active: true, currentWindow: true })
       .then(() => {
-        browser.runtime.sendMessage({
+        chrome.runtime.sendMessage({
           nameFormat: formatSpec.value,
           includeLoc: blockLocation.checked,
         });
