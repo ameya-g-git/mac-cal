@@ -363,7 +363,10 @@ input {
     scale: 0.95;
   }
 
-  &:disabled {
+  &:disabled,
+  &:disabled:hover,
+  &:disabled:active,
+  &:disabled:hover:active {
     background-color: #3f001f;
     color: #8c5d0b;
     cursor: default;
@@ -371,8 +374,9 @@ input {
   }
 }
 
-#disclaimer {
-  display: none;
+#disclaimer,
+#error {
+  /* display: none; */
   user-select: none;
   width: 100%;
   font-weight: bolder;

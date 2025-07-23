@@ -70,17 +70,19 @@ let contentState = {
   login: false,
 };
 
-let error = '';
-let success = true;
+let error = null;
+let success = false;
 
 function handleMessage(request) {
-  console.log(request);
   if (!request.popup) return false;
+
   if ('urlMatch' in request && 'login' in request)
     contentState = { ...request };
-  if ('success' in request && 'error' in request) {
+  else if ('success' in request && 'error' in request) {
     error = request.error;
     success = request.success;
+  } else {
+    return false;
   }
 }
 
@@ -102,7 +104,6 @@ window.addEventListener('pageshow', () => {
         elem.disabled = true;
       });
       document.getElementById('disclaimer').style.display = 'block';
-      document.getElementById('disclaimer').innerText = '(sign in first!)';
     } else {
       document.querySelectorAll('input, button').forEach((elem) => {
         elem.disabled = false;
@@ -110,16 +111,15 @@ window.addEventListener('pageshow', () => {
       document.getElementById('disclaimer').style.display = 'none';
     }
 
-    if (error.length > 0) {
+    if (error !== null && error.length > 0) {
       console.log(error);
-      document.getElementById('disclaimer').innerText =
-        'Error occurred. ' + error;
-      document.getElementById('disclaimer').style.display = 'block';
+      document.getElementById('error').innerText = 'Error occurred. ' + error;
+      document.getElementById('error').style.display = 'block';
     } else {
-      document.getElementById('disclaimer').style.display = 'none';
+      document.getElementById('error').style.display = 'none';
     }
 
-    if (success) window.close;
+    if (success) window.close();
   }, 16);
 
   infoModal.addEventListener('mouseenter', () => {
