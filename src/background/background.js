@@ -31,7 +31,12 @@ chrome.runtime.onMessage.addListener((req) => {
     sendContentMessage(req);
   }
 
-  if ("urlMatch" in req && "login" in req && !req.popup) {
-    chrome.runtime.sendMessage({ ...req, popup: true });
+  if (
+    (("urlMatch" in req && "login" in req) || // webpage check
+      ("success" in req && "error" in req)) && // submission check
+    !req.popup // make sure the message is meant for the popup
+  ) {
+    setTimeout(() => chrome.runtime.sendMessage({ ...req, popup: true }), 50);
+    return false;
   }
 });
