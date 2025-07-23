@@ -26,8 +26,8 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "maccal@extension.com",
-      "strict_min_version": "42.0"
+      "id": "{0d3fc01c-cb46-4a21-8c6d-9bf7ebe8e765}",
+      "strict_min_version": "79.0"
     }
   },
 

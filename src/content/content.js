@@ -1,17 +1,38 @@
 import { generateICS } from "./generate_ics.js";
 
 (() => {
-  let script = "";
-  let cal;
-
-  if (window.location.href.match(/.*:\/\/mytimetable\.mcmaster\.ca.*/)) {
-    script = "content_scripts/parse_mytimetable.js";
-  } else {
-    // TODO: Idk throw an error or something
-  }
-
   function handleMessage(request, sender, sendResponse) {
-    if (request.nameFormat) generateICS(request.nameFormat, request.includeLoc);
+    if (request.start) {
+      if (!window.location.href.match(/.*:\/\/mytimetable\.mcmaster\.ca.*/)) {
+        // wrong url
+        chrome.runtime.sendMessage({
+          urlMatch: false,
+          login: false,
+        });
+      } else if (
+        document.body.className.includes("login_body") ||
+        document
+          .querySelector(".autho_text.header_invader_text_top")
+          .innerText.includes("Guest")
+      ) {
+        // right url but not logged in
+        chrome.runtime.sendMessage({
+          urlMatch: true,
+          login: false,
+        });
+      } else {
+        chrome.runtime.sendMessage({
+          urlMatch: true,
+          login: true,
+        });
+      }
+    }
+    if (request.nameFormat && request.includeLoc)
+      try {
+        generateICS(request.nameFormat, request.includeLoc);
+      } catch (e) {
+        console.error(e);
+      }
     return true;
   }
 

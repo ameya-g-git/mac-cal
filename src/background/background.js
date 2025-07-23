@@ -2,34 +2,36 @@ async function getCurrentTab() {
   return chrome.tabs.query({ active: true, currentWindow: true });
 }
 
+async function sendContentMessage(message) {
+  let tabId = 0;
+
+  getCurrentTab()
+    .then((tabs) => {
+      return (tabId = tabs[0].id);
+    })
+    .then((tabId) => chrome.tabs.sendMessage(tabId, message))
+    .then(() => console.log("sent message"))
+    .catch((_) => {
+      console.log(
+        "content script not installed, installing and sending message",
+      );
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ["../content/content.js"],
+      });
+      setTimeout(() => {
+        chrome.tabs.sendMessage(tabId, message);
+      }, 100);
+    });
+}
+
 chrome.runtime.onMessage.addListener((req) => {
   console.log(req);
+  if ((req.nameFormat && req.includeLoc) || req.start) {
+    sendContentMessage(req);
+  }
 
-  tabId = 0;
-
-  if (req.nameFormat)
-    getCurrentTab()
-      .then((tabs) => {
-        return (tabId = tabs[0].id);
-      })
-      .then((tabId) =>
-        chrome.tabs.sendMessage(tabId, {
-          nameFormat: req.nameFormat,
-        }),
-      )
-      .then(() => console.log("sent message"))
-      .catch((e) => {
-        console.log(
-          "content script not installed, installing and sending message",
-        );
-        chrome.scripting.executeScript({
-          target: { tabId: tabId },
-          files: ["../content/content.js"],
-        });
-        setTimeout(() => {
-          chrome.tabs.sendMessage(tabId, {
-            ...req,
-          });
-        }, 100);
-      });
+  if ("urlMatch" in req && "login" in req && !req.popup) {
+    chrome.runtime.sendMessage({ ...req, popup: true });
+  }
 });

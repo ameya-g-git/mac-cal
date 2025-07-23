@@ -5,13 +5,14 @@ async function verifyURL() {
       currentWindow: true,
     })
     .then((tabs) => {
-      if (!tabs[0].url.match(/.*:\/\/mytimetable\.mcmaster\.ca/)) {
-        document.getElementById("wrong-page-content").className = "";
-        document.getElementById("popup-content").className = "hidden";
+      url = tabs[0].url;
+      if (!url.match(/.*:\/\/mytimetable\.mcmaster\.ca/)) {
+        document.getElementById("popup-content").style.display = "none";
+        document.getElementById("wrong-page-content").style.display = "flex";
         throw new Error("Wrong website!");
       }
     });
-  return;
+  return url;
 }
 
 function parseFormat(format) {
@@ -64,26 +65,56 @@ function parseFormat(format) {
   return outputStr.length > 45 ? outputStr.slice(0, 42) + "..." : outputStr;
 }
 
+let contentState = {
+  urlMatch: false,
+  login: false,
+  success: false,
+};
+
+function handleMessage(request) {
+  if (!request.popup) return true;
+  console.log(request);
+  if ("urlMatch" in request && "login" in request)
+    contentState = { ...request };
+}
+
 window.addEventListener("pageshow", () => {
-  verifyURL();
+  verifyURL().then(() => chrome.runtime.sendMessage({ start: true }));
+
+  if (!chrome.runtime.onMessage.hasListener(handleMessage))
+    chrome.runtime.onMessage.addListener(handleMessage);
 
   const formatSpec = document.getElementById("format-spec");
   const timeBlockTitle = document.getElementById("block-title");
   const infoModal = document.getElementById("format-info");
   const blockLocation = document.getElementById("block-loc");
+  const roomLoc = document.getElementById("room-loc");
 
-  infoModal.addEventListener("mouseenter", (e) => {
+  setInterval(() => {
+    if (!contentState.login) {
+      document.querySelectorAll("input, button").forEach((elem) => {
+        elem.disabled = true;
+      });
+      document.getElementById("login-disclaimer").style.display = "block";
+    } else {
+      document.querySelectorAll("input, button").forEach((elem) => {
+        elem.disabled = false;
+      });
+      document.getElementById("login-disclaimer").style.display = "none";
+    }
+  }, 16);
+
+  infoModal.addEventListener("mouseenter", () => {
     document.getElementById("modal").style.display = "block";
   });
 
   infoModal.addEventListener("mouseleave", () => {
-    console.log("left");
     document.getElementById("modal").style.display = "none";
   });
 
-  document.getElementById("room-loc").addEventListener("input", () => {
-    document.getElementById("room-loc").checked
-      ? (blockLocation.style.display = "block")
+  roomLoc.addEventListener("input", () => {
+    roomLoc.checked
+      ? (blockLocation.style.display = "flex")
       : (blockLocation.style.display = "none");
   });
 
@@ -94,10 +125,11 @@ window.addEventListener("pageshow", () => {
       e.preventDefault();
       formatSpec.value += `{${spec}} `;
       timeBlockTitle.innerText = parseFormat(formatSpec.value);
+      timeBlockTitle.focus();
     });
   });
 
-  formatSpec.addEventListener("input", (e) => {
+  formatSpec.addEventListener("input", () => {
     try {
       timeBlockTitle.innerText = parseFormat(formatSpec.value);
       document.getElementById("format-err").style.display = "none";
@@ -106,15 +138,13 @@ window.addEventListener("pageshow", () => {
     }
   });
 
-  document.getElementById("popup-content").addEventListener("submit", (e) => {
-    console.log("sun,to");
-    tabId = 0;
+  document.getElementById("popup-content").addEventListener("submit", () => {
     chrome.tabs
       .query({ active: true, currentWindow: true })
       .then(() => {
         chrome.runtime.sendMessage({
           nameFormat: formatSpec.value,
-          includeLoc: blockLocation.checked,
+          includeLoc: roomLoc.checked,
         });
       })
       .catch((e) => console.error(e));
