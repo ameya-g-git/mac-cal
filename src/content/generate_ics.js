@@ -124,13 +124,17 @@ export function generateICS(nameFormat, includeLoc) {
 
   let d;
 
-  if (season.includes("fall")) {
-    d = getFallDates(Number(year));
-  } else if (season.includes("summer")) {
-    d = getSpringSummerDates(Number(year));
-  } else if (season.includes("winter")) {
-    d = getWinterDates(Number(year));
-  } else {
+  try {
+    if (season.includes("fall")) {
+      d = getFallDates(Number(year));
+    } else if (season.includes("summer")) {
+      d = getSpringSummerDates(Number(year));
+    } else if (season.includes("winter")) {
+      d = getWinterDates(Number(year));
+    } else {
+      throw new Error();
+    }
+  } catch {
     throw new Error("Semester not specified.");
   }
 
