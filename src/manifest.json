@@ -13,7 +13,8 @@
     "128": "static/icons/maccal_icon128.png"
   },
 
-  "action": {
+  "page_action": {
+    "show_matches": ["*://mytimetable.mcmaster.ca/*"],
     "default_icon": {
       "16": "static/icons/maccal_icon16.png",
       "32": "static/icons/maccal_icon32.png",
@@ -26,7 +27,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "{0d3fc01a-cb46-4a21-8c6d-9bf7ebe8e765}",
+      "id": "{0d3fc01c-cb46-4a21-8c6d-9bf7ebe8e765}",
       "strict_min_version": "79.0"
     }
   },
