@@ -68,14 +68,20 @@ function parseFormat(format) {
 let contentState = {
   urlMatch: false,
   login: false,
-  success: false,
 };
 
+let error = "";
+let success = true;
+
 function handleMessage(request) {
-  if (!request.popup) return true;
   console.log(request);
+  if (!request.popup) return false;
   if ("urlMatch" in request && "login" in request)
     contentState = { ...request };
+  if ("success" in request && "error" in request) {
+    error = request.error;
+    success = request.success;
+  }
 }
 
 window.addEventListener("pageshow", () => {
@@ -95,20 +101,39 @@ window.addEventListener("pageshow", () => {
       document.querySelectorAll("input, button").forEach((elem) => {
         elem.disabled = true;
       });
-      document.getElementById("login-disclaimer").style.display = "block";
+      document.getElementById("disclaimer").style.display = "block";
+      document.getElementById("disclaimer").innerText = "(sign in first!)";
     } else {
       document.querySelectorAll("input, button").forEach((elem) => {
         elem.disabled = false;
       });
-      document.getElementById("login-disclaimer").style.display = "none";
+      document.getElementById("disclaimer").style.display = "none";
     }
+
+    if (error.length > 0) {
+      console.log(error);
+      document.getElementById("disclaimer").innerText =
+        "Error occurred. " + error;
+      document.getElementById("disclaimer").style.display = "block";
+    } else {
+      document.getElementById("disclaimer").style.display = "none";
+    }
+
+    if (success) window.close;
   }, 16);
 
   infoModal.addEventListener("mouseenter", () => {
     document.getElementById("modal").style.display = "block";
   });
 
+  infoModal.addEventListener("focus", () => {
+    document.getElementById("modal").style.display = "block";
+  });
+
   infoModal.addEventListener("mouseleave", () => {
+    document.getElementById("modal").style.display = "none";
+  });
+  infoModal.addEventListener("blur", () => {
     document.getElementById("modal").style.display = "none";
   });
 
@@ -138,7 +163,8 @@ window.addEventListener("pageshow", () => {
     }
   });
 
-  document.getElementById("popup-content").addEventListener("submit", () => {
+  document.getElementById("popup-content").addEventListener("submit", (e) => {
+    e.preventDefault();
     chrome.tabs
       .query({ active: true, currentWindow: true })
       .then(() => {
@@ -147,6 +173,6 @@ window.addEventListener("pageshow", () => {
           includeLoc: roomLoc.checked,
         });
       })
-      .catch((e) => console.error(e));
+      .catch((err) => console.error(err));
   });
 });
