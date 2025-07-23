@@ -25,6 +25,9 @@ Information is read from the webpage once you click "Generate Calendar" and is n
 ## Development / Troubleshooting
 Dealing with errors? Hate my code? Want to add another statuatory holiday that you observe? Raise an issue on this GitHub page, or fix it yourself! Here's how to get started.
 
+Node: >=18.12.0
+NPM: >=8.19.2
+
 Clone the repo locally:
 ```sh
 git clone https://github.com/ameya-g-git/mac-cal
