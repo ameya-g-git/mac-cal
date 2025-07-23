@@ -131,7 +131,7 @@ export function generateICS(nameFormat, includeLoc) {
   } else if (season.includes("winter")) {
     d = getWinterDates(Number(year));
   } else {
-    // TODO: throw error
+    throw new Error("Semester not specified.");
   }
 
   // * generate ics
@@ -140,8 +140,8 @@ export function generateICS(nameFormat, includeLoc) {
     /* 
         example of the data stored in a single `cls`, for ease of development
         {
-            "begin": "2025-05-05T04:00:00.000Z",
-            "end": "2025-06-13T04:00:00.000Z",
+            "begin": "2025-05-05T04:00:00.000Z", (Date)
+            "end": "2025-06-13T04:00:00.000Z",  (Date)
             "name": "MEDIAART 1A03",
             "classType": "LEC",
             "classSec": "C01",
@@ -186,7 +186,6 @@ export function generateICS(nameFormat, includeLoc) {
 
       const { days, startTime, endTime } = freq;
 
-      // TODO: i need to work on the formatting language for calendar blocks, but for now i'll use my format
       let eventName = `${name} - ${classType} ${classSec}`;
       try {
         eventName = parseFormat(nameFormat, {

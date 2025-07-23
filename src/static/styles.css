@@ -32,7 +32,7 @@ body {
 
 header {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   align-items: center;
 
   padding: 1rem;
@@ -42,6 +42,7 @@ header {
 
   & img {
     height: 100%;
+    margin-bottom: 0.25rem;
   }
 }
 
@@ -64,6 +65,20 @@ label {
 
 hr {
   opacity: 0.5;
+}
+
+a {
+  color: #7a003c;
+  font-weight: bolder;
+
+  &:hover,
+  &:focus {
+    color: #a40e59;
+  }
+
+  &:active {
+    color: #620131;
+  }
 }
 
 form {
@@ -155,6 +170,11 @@ input {
   & button:hover:active {
     filter: brightness(0.75);
   }
+  & button:disabled,
+  & button:disabled:active {
+    filter: brightness(0.7);
+    cursor: default;
+  }
 }
 
 #room-check {
@@ -210,6 +230,23 @@ input {
   & input:checked:hover:active ~ #checkbox-ctnr {
     background-color: #620131;
   }
+
+  & input:disabled ~ #checkbox-ctnr,
+  & input:disabled:hover ~ #checkbox-ctnr,
+  & input:disabled:active ~ #checkbox-ctnr,
+  & input:disabled:hover:active ~ #checkbox-ctnr {
+    background-color: white;
+    border-color: lightgray;
+  }
+
+  &:has(input:disabled) {
+    cursor: default;
+    color: gray;
+  }
+
+  & input:disabled ~ #checkbox-ctnr:after {
+    border-color: gray;
+  }
 }
 
 #timetable-preview {
@@ -260,6 +297,7 @@ input {
 }
 
 #block-loc {
+  height: 1rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -267,6 +305,64 @@ input {
   font-size: 0.75rem;
 
   & img {
-    height: 0.75rem;
+    height: 80%;
   }
+}
+
+#wrong-page-content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+
+  & * {
+    text-align: center;
+    width: 100%;
+  }
+
+  & > small {
+    margin-top: 1rem;
+  }
+}
+
+#submit {
+  height: 3rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: #7a003c;
+  color: #fdbf57;
+  transition: all ease-in-out 0.25s;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: #fdbf57;
+    color: #7a003c;
+    scale: 1.05;
+    box-shadow:
+      0px 5px 20px rgba(0, 0, 0, 0.3),
+      0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    background-color: #620131;
+    color: #fdbf57;
+    scale: 0.95;
+  }
+
+  &:disabled {
+    background-color: #3f001f;
+    color: #8c5d0b;
+    cursor: default;
+    scale: 0.95;
+  }
+}
+
+#login-disclaimer {
+  width: 100%;
+  font-weight: bolder;
+  text-align: center;
+  margin-top: -0.5rem;
 }
