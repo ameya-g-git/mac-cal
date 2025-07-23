@@ -8,7 +8,7 @@ Accounts for sessional dates, ensuring your calendar only shows dates that class
 ## Usage
 Fortunately, the extension is very simple to use!
 
-1. Sign into [MyTimetable](https://mytimetable.mcmaster.ca]).
+1. Sign into [MyTimetable](https://mytimetable.mcmaster.ca]) and select a semester!
 2. Customize the name of each calendar event *(the buttons will insert the given detail into the name)*, or just leave it how it is!
 3. Choose if you want the room code to be stored in the event's `location` property (i personally like how this looks)!
 4. Press "Generate Calendar" and download the `.ics` file once the dialog pops up!
@@ -36,7 +36,7 @@ Install dependencies:
 npm install
 ```
 
-Run the Webpack watch script:
+Run the Webpack watch script to compile on file changes:
 ```sh
 npm run watch
 ```
@@ -45,7 +45,7 @@ And now you're all set to get started! Some information about the file structure
 
 - `/assets`: Promotional images
 - `/build`: The bundled Webpack code
-- `/node_modules`
+- `/node_modules`: Yaknow
 - `/src`: The meat of the extension.
   - `/background`: The background script for the extension. Receives the submit event from the popup and sends the appropriate information to the content script
   - `/content`: Content scripts. Read the webpage and generate the `.ics` file

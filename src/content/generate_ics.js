@@ -1,30 +1,30 @@
-import parse from "./parse_mytimetable.js";
-import { ics } from "./ics.js";
-import getFallDates from "./date_utils/generate_fall_dates.js";
-import getSpringSummerDates from "./date_utils/generate_springsummer_dates.js";
-import getWinterDates from "./date_utils/generate_winter_dates.js";
+import parse from './parse_mytimetable.js';
+import { ics } from './ics.js';
+import getFallDates from './date_utils/generate_fall_dates.js';
+import getSpringSummerDates from './date_utils/generate_springsummer_dates.js';
+import getWinterDates from './date_utils/generate_winter_dates.js';
 
 function getDayDelta(date, day) {
   const weekday = date.getDay();
   let dayOffset = 0;
 
   switch (day) {
-    case "MO":
+    case 'MO':
       dayOffset = 1;
       break;
-    case "TU":
+    case 'TU':
       dayOffset = 2;
       break;
-    case "WE":
+    case 'WE':
       dayOffset = 3;
       break;
-    case "TH":
+    case 'TH':
       dayOffset = 4;
       break;
-    case "FR":
+    case 'FR':
       dayOffset = 5;
       break;
-    case "SA":
+    case 'SA':
       dayOffset = 6;
       break;
     default:
@@ -60,52 +60,52 @@ function calcNewStartDate(begin, days) {
 
 function parseFormat(format, classData) {
   let output = [];
-  let specCode = "";
+  let specCode = '';
   let specifier = false; // whether or not we're currently parsing a specifier
 
   const { name, classType, classSec, loc } = classData;
 
   for (const char of format) {
     specifier ? (specCode += char) : output.push(char);
-    if (char === "{") {
+    if (char === '{') {
       output.pop();
-      if (output[output.length - 1] === "\\") {
+      if (output[output.length - 1] === '\\') {
         output.pop();
-        output.push("{");
+        output.push('{');
         continue;
       }
       specifier = true;
     }
 
-    if (char === "}") {
+    if (char === '}') {
       specifier = false;
       specCode = specCode.slice(0, -1);
 
       if (!specCode) continue;
 
       switch (specCode) {
-        case "code":
+        case 'code':
           output.push(name);
           break;
-        case "type":
+        case 'type':
           output.push(classType);
           break;
-        case "sec":
+        case 'sec':
           output.push(classSec);
           break;
-        case "room":
+        case 'room':
           output.push(loc);
           break;
         default:
           output.push(`{${specCode}}`);
       }
-      specCode = "";
+      specCode = '';
     }
   }
 
-  if (specifier) throw new SyntaxError("Curly brace not closed.");
+  if (specifier) throw new SyntaxError('Curly brace not closed.');
 
-  const outputStr = output.join("");
+  const outputStr = output.join('');
 
   return outputStr;
 }
@@ -116,26 +116,26 @@ export function generateICS(nameFormat, includeLoc) {
 
   // * create ics instance
   const { sem, classes } = data;
-  const [year, season] = sem.split(" ");
+  const [year, season] = sem.split(' ');
 
-  const uid = `maccal${sem.replace(" ", "")}`;
+  const uid = `maccal${sem.replace(' ', '')}`;
   const cal = ics(uid);
   // * calculate sessional dates
 
   let d;
 
   try {
-    if (season.includes("fall")) {
+    if (season.includes('fall')) {
       d = getFallDates(Number(year));
-    } else if (season.includes("summer")) {
+    } else if (season.includes('summer')) {
       d = getSpringSummerDates(Number(year));
-    } else if (season.includes("winter")) {
+    } else if (season.includes('winter')) {
       d = getWinterDates(Number(year));
     } else {
       throw new Error();
     }
   } catch {
-    throw new Error("Semester not specified.");
+    throw new Error('Semester not specified.');
   }
 
   // * generate ics
@@ -199,7 +199,7 @@ export function generateICS(nameFormat, includeLoc) {
           loc,
         });
       } catch {
-        console.error("Error in event name. Reverting to default name format.");
+        console.error('Error in event name. Reverting to default name format.');
         eventName = `${name} - ${classType} ${classSec}`;
       }
 
@@ -207,15 +207,15 @@ export function generateICS(nameFormat, includeLoc) {
       clsBegin.setDate(calcNewStartDate(clsBegin, days));
 
       const rrule = {
-        freq: "WEEKLY",
+        freq: 'WEEKLY',
         byday: days,
         until: secEnd,
       };
 
       cal.addEvent(
         eventName,
-        "",
-        includeLoc ? loc : "",
+        '',
+        includeLoc ? loc : '',
         `${clsBegin.toDateString()} ${startTime}`,
         `${clsBegin.toDateString()} ${endTime}`,
         rrule,
@@ -223,5 +223,5 @@ export function generateICS(nameFormat, includeLoc) {
     }
   }
 
-  cal.download("maccal_" + sem.replace(" ", ""));
+  cal.download('maccal_' + sem.replace(' ', ''));
 }

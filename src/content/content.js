@@ -1,4 +1,4 @@
-import { generateICS } from "./generate_ics.js";
+import { generateICS } from './generate_ics.js';
 
 (() => {
   function handleMessage(request, sender, sendResponse) {
@@ -10,10 +10,10 @@ import { generateICS } from "./generate_ics.js";
           login: false,
         });
       } else if (
-        document.body.className.includes("login_body") ||
+        document.body.className.includes('login_body') ||
         document
-          .querySelector(".autho_text.header_invader_text_top")
-          .innerText.includes("Guest")
+          .querySelector('.autho_text.header_invader_text_top')
+          .innerText.includes('Guest')
       ) {
         // right url but not logged in
         chrome.runtime.sendMessage({
@@ -30,7 +30,7 @@ import { generateICS } from "./generate_ics.js";
     if (request.nameFormat && request.includeLoc)
       try {
         generateICS(request.nameFormat, request.includeLoc);
-        chrome.runtime.sendMessage({ success: true, error: "" });
+        chrome.runtime.sendMessage({ success: true, error: '' });
       } catch (e) {
         console.error(e);
         chrome.runtime.sendMessage({ success: false, error: e.message });

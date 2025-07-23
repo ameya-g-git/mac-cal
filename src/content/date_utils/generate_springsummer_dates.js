@@ -1,5 +1,5 @@
-import getVictoriaDay from "./calc_vic_day.js";
-import getCivicHoliday from "./calc_civic_holiday.js";
+import getVictoriaDay from './calc_vic_day.js';
+import getCivicHoliday from './calc_civic_holiday.js';
 
 export default function getSpringSummerDates(year) {
   let dates = [];

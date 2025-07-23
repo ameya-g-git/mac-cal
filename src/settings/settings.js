@@ -7,9 +7,9 @@ async function verifyURL() {
     .then((tabs) => {
       url = tabs[0].url;
       if (!url.match(/.*:\/\/mytimetable\.mcmaster\.ca/)) {
-        document.getElementById("popup-content").style.display = "none";
-        document.getElementById("wrong-page-content").style.display = "flex";
-        throw new Error("Wrong website!");
+        document.getElementById('popup-content').style.display = 'none';
+        document.getElementById('wrong-page-content').style.display = 'flex';
+        throw new Error('Wrong website!');
       }
     });
   return url;
@@ -17,52 +17,52 @@ async function verifyURL() {
 
 function parseFormat(format) {
   let output = [];
-  let specCode = "";
+  let specCode = '';
   let specifier = false; // whether or not we're currently parsing a specifier
 
   for (const char of format) {
     specifier ? (specCode += char) : output.push(char);
-    if (char === "{") {
+    if (char === '{') {
       output.pop();
-      if (output[output.length - 1] === "\\") {
+      if (output[output.length - 1] === '\\') {
         output.pop();
-        output.push("{");
+        output.push('{');
         continue;
       }
       specifier = true;
     }
 
-    if (char === "}") {
+    if (char === '}') {
       specifier = false;
       specCode = specCode.slice(0, -1);
 
       if (!specCode) continue;
 
       switch (specCode) {
-        case "code":
-          output.push("MATH 1ZA3");
+        case 'code':
+          output.push('MATH 1ZA3');
           break;
-        case "type":
-          output.push("LEC");
+        case 'type':
+          output.push('LEC');
           break;
-        case "sec":
-          output.push("C01");
+        case 'sec':
+          output.push('C01');
           break;
-        case "room":
-          output.push("PGCLL 127");
+        case 'room':
+          output.push('PGCLL 127');
           break;
         default:
           output.push(`{${specCode}}`);
       }
-      specCode = "";
+      specCode = '';
     }
   }
 
-  if (specifier) throw new SyntaxError("Curly brace not closed.");
+  if (specifier) throw new SyntaxError('Curly brace not closed.');
 
-  const outputStr = output.join("");
+  const outputStr = output.join('');
 
-  return outputStr.length > 45 ? outputStr.slice(0, 42) + "..." : outputStr;
+  return outputStr.length > 45 ? outputStr.slice(0, 42) + '...' : outputStr;
 }
 
 let contentState = {
@@ -70,83 +70,83 @@ let contentState = {
   login: false,
 };
 
-let error = "";
+let error = '';
 let success = true;
 
 function handleMessage(request) {
   console.log(request);
   if (!request.popup) return false;
-  if ("urlMatch" in request && "login" in request)
+  if ('urlMatch' in request && 'login' in request)
     contentState = { ...request };
-  if ("success" in request && "error" in request) {
+  if ('success' in request && 'error' in request) {
     error = request.error;
     success = request.success;
   }
 }
 
-window.addEventListener("pageshow", () => {
+window.addEventListener('pageshow', () => {
   verifyURL().then(() => chrome.runtime.sendMessage({ start: true }));
 
   if (!chrome.runtime.onMessage.hasListener(handleMessage))
     chrome.runtime.onMessage.addListener(handleMessage);
 
-  const formatSpec = document.getElementById("format-spec");
-  const timeBlockTitle = document.getElementById("block-title");
-  const infoModal = document.getElementById("format-info");
-  const blockLocation = document.getElementById("block-loc");
-  const roomLoc = document.getElementById("room-loc");
+  const formatSpec = document.getElementById('format-spec');
+  const timeBlockTitle = document.getElementById('block-title');
+  const infoModal = document.getElementById('format-info');
+  const blockLocation = document.getElementById('block-loc');
+  const roomLoc = document.getElementById('room-loc');
 
   setInterval(() => {
     if (!contentState.login) {
-      document.querySelectorAll("input, button").forEach((elem) => {
+      document.querySelectorAll('input, button').forEach((elem) => {
         elem.disabled = true;
       });
-      document.getElementById("disclaimer").style.display = "block";
-      document.getElementById("disclaimer").innerText = "(sign in first!)";
+      document.getElementById('disclaimer').style.display = 'block';
+      document.getElementById('disclaimer').innerText = '(sign in first!)';
     } else {
-      document.querySelectorAll("input, button").forEach((elem) => {
+      document.querySelectorAll('input, button').forEach((elem) => {
         elem.disabled = false;
       });
-      document.getElementById("disclaimer").style.display = "none";
+      document.getElementById('disclaimer').style.display = 'none';
     }
 
     if (error.length > 0) {
       console.log(error);
-      document.getElementById("disclaimer").innerText =
-        "Error occurred. " + error;
-      document.getElementById("disclaimer").style.display = "block";
+      document.getElementById('disclaimer').innerText =
+        'Error occurred. ' + error;
+      document.getElementById('disclaimer').style.display = 'block';
     } else {
-      document.getElementById("disclaimer").style.display = "none";
+      document.getElementById('disclaimer').style.display = 'none';
     }
 
     if (success) window.close;
   }, 16);
 
-  infoModal.addEventListener("mouseenter", () => {
-    document.getElementById("modal").style.display = "block";
+  infoModal.addEventListener('mouseenter', () => {
+    document.getElementById('modal').style.display = 'block';
   });
 
-  infoModal.addEventListener("focus", () => {
-    document.getElementById("modal").style.display = "block";
+  infoModal.addEventListener('focus', () => {
+    document.getElementById('modal').style.display = 'block';
   });
 
-  infoModal.addEventListener("mouseleave", () => {
-    document.getElementById("modal").style.display = "none";
+  infoModal.addEventListener('mouseleave', () => {
+    document.getElementById('modal').style.display = 'none';
   });
-  infoModal.addEventListener("blur", () => {
-    document.getElementById("modal").style.display = "none";
+  infoModal.addEventListener('blur', () => {
+    document.getElementById('modal').style.display = 'none';
   });
 
-  roomLoc.addEventListener("input", () => {
+  roomLoc.addEventListener('input', () => {
     roomLoc.checked
-      ? (blockLocation.style.display = "flex")
-      : (blockLocation.style.display = "none");
+      ? (blockLocation.style.display = 'flex')
+      : (blockLocation.style.display = 'none');
   });
 
-  document.querySelectorAll("#format-btns>*").forEach((elem) => {
-    const [_, spec] = elem.id.split("-");
+  document.querySelectorAll('#format-btns>*').forEach((elem) => {
+    const [_, spec] = elem.id.split('-');
 
-    elem.addEventListener("click", (e) => {
+    elem.addEventListener('click', (e) => {
       e.preventDefault();
       formatSpec.value += `{${spec}} `;
       timeBlockTitle.innerText = parseFormat(formatSpec.value);
@@ -154,16 +154,16 @@ window.addEventListener("pageshow", () => {
     });
   });
 
-  formatSpec.addEventListener("input", () => {
+  formatSpec.addEventListener('input', () => {
     try {
       timeBlockTitle.innerText = parseFormat(formatSpec.value);
-      document.getElementById("format-err").style.display = "none";
+      document.getElementById('format-err').style.display = 'none';
     } catch {
-      document.getElementById("format-err").style.display = "inline-block";
+      document.getElementById('format-err').style.display = 'inline-block';
     }
   });
 
-  document.getElementById("popup-content").addEventListener("submit", (e) => {
+  document.getElementById('popup-content').addEventListener('submit', (e) => {
     e.preventDefault();
     chrome.tabs
       .query({ active: true, currentWindow: true })

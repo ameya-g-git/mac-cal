@@ -7,10 +7,10 @@
 var saveAs =
   saveAs ||
   (function (e) {
-    "use strict";
+    'use strict';
     if (
-      typeof e === "undefined" ||
-      (typeof navigator !== "undefined" &&
+      typeof e === 'undefined' ||
+      (typeof navigator !== 'undefined' &&
         /MSIE [1-9]\./.test(navigator.userAgent))
     ) {
       return;
@@ -19,10 +19,10 @@ var saveAs =
       n = function () {
         return e.URL || e.webkitURL || e;
       },
-      r = t.createElementNS("http://www.w3.org/1999/xhtml", "a"),
-      o = "download" in r,
+      r = t.createElementNS('http://www.w3.org/1999/xhtml', 'a'),
+      o = 'download' in r,
       a = function (e) {
-        var t = new MouseEvent("click");
+        var t = new MouseEvent('click');
         e.dispatchEvent(t);
       },
       i = /constructor/i.test(e.HTMLElement) || e.safari,
@@ -32,11 +32,11 @@ var saveAs =
           throw t;
         }, 0);
       },
-      s = "application/octet-stream",
+      s = 'application/octet-stream',
       d = 1e3 * 40,
       c = function (e) {
         var t = function () {
-          if (typeof e === "string") {
+          if (typeof e === 'string') {
             n().revokeObjectURL(e);
           } else {
             e.remove();
@@ -48,8 +48,8 @@ var saveAs =
         t = [].concat(t);
         var r = t.length;
         while (r--) {
-          var o = e["on" + t[r]];
-          if (typeof o === "function") {
+          var o = e['on' + t[r]];
+          if (typeof o === 'function') {
             try {
               o.call(e, n || e);
             } catch (a) {
@@ -79,7 +79,7 @@ var saveAs =
           m = w === s,
           y,
           h = function () {
-            l(v, "writestart progress write writeend".split(" "));
+            l(v, 'writestart progress write writeend'.split(' '));
           },
           S = function () {
             if ((f || (m && i)) && e.FileReader) {
@@ -87,8 +87,8 @@ var saveAs =
               r.onloadend = function () {
                 var t = f
                   ? r.result
-                  : r.result.replace(/^data:[^;]*;/, "data:attachment/file;");
-                var n = e.open(t, "_blank");
+                  : r.result.replace(/^data:[^;]*;/, 'data:attachment/file;');
+                var n = e.open(t, '_blank');
                 if (!n) e.location.href = t;
                 t = undefined;
                 v.readyState = v.DONE;
@@ -104,7 +104,7 @@ var saveAs =
             if (m) {
               e.location.href = y;
             } else {
-              var o = e.open(y, "_blank");
+              var o = e.open(y, '_blank');
               if (!o) {
                 e.location.href = y;
               }
@@ -130,11 +130,11 @@ var saveAs =
       },
       w = v.prototype,
       m = function (e, t, n) {
-        return new v(e, t || e.name || "download", n);
+        return new v(e, t || e.name || 'download', n);
       };
-    if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+    if (typeof navigator !== 'undefined' && navigator.msSaveOrOpenBlob) {
       return function (e, t, n) {
-        t = t || e.name || "download";
+        t = t || e.name || 'download';
         if (!n) {
           e = p(e);
         }
@@ -155,50 +155,50 @@ var saveAs =
         null;
     return m;
   })(
-    (typeof self !== "undefined" && self) ||
-      (typeof window !== "undefined" && window) ||
+    (typeof self !== 'undefined' && self) ||
+      (typeof window !== 'undefined' && window) ||
       this.content,
   );
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports.saveAs = saveAs;
 } else if (
-  typeof define !== "undefined" &&
+  typeof define !== 'undefined' &&
   define !== null &&
   define.amd !== null
 ) {
-  define("FileSaver.js", function () {
+  define('FileSaver.js', function () {
     return saveAs;
   });
 }
 
 // MARK: ics(uidDomain, prodId)
 export let ics = function (uidDomain, prodId) {
-  "use strict";
+  'use strict';
 
   if (
-    navigator.userAgent.indexOf("MSIE") > -1 &&
-    navigator.userAgent.indexOf("MSIE 10") == -1
+    navigator.userAgent.indexOf('MSIE') > -1 &&
+    navigator.userAgent.indexOf('MSIE 10') == -1
   ) {
-    console.log("Unsupported Browser");
+    console.log('Unsupported Browser');
     return;
   }
 
-  if (typeof uidDomain === "undefined") {
-    uidDomain = "default";
+  if (typeof uidDomain === 'undefined') {
+    uidDomain = 'default';
   }
-  if (typeof prodId === "undefined") {
-    prodId = "Calendar";
+  if (typeof prodId === 'undefined') {
+    prodId = 'Calendar';
   }
 
-  var SEPARATOR = navigator.appVersion.indexOf("Win") !== -1 ? "\r\n" : "\n";
+  var SEPARATOR = navigator.appVersion.indexOf('Win') !== -1 ? '\r\n' : '\n';
   var calendarEvents = [];
   var calendarStart = [
-    "BEGIN:VCALENDAR",
-    "PRODID:" + prodId,
-    "VERSION:2.0",
+    'BEGIN:VCALENDAR',
+    'PRODID:' + prodId,
+    'VERSION:2.0',
   ].join(SEPARATOR);
-  var calendarEnd = SEPARATOR + "END:VCALENDAR";
-  var BYDAY_VALUES = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+  var calendarEnd = SEPARATOR + 'END:VCALENDAR';
+  var BYDAY_VALUES = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
   return {
     /**
@@ -230,11 +230,11 @@ export let ics = function (uidDomain, prodId) {
     addEvent: function (subject, description, location, begin, stop, rrule) {
       // I'm not in the mood to make these optional... So they are all required
       if (
-        typeof subject === "undefined" ||
-        typeof description === "undefined" ||
-        typeof location === "undefined" ||
-        typeof begin === "undefined" ||
-        typeof stop === "undefined"
+        typeof subject === 'undefined' ||
+        typeof description === 'undefined' ||
+        typeof location === 'undefined' ||
+        typeof begin === 'undefined' ||
+        typeof stop === 'undefined'
       ) {
         return false;
       }
@@ -243,10 +243,10 @@ export let ics = function (uidDomain, prodId) {
       if (rrule) {
         if (!rrule.rrule) {
           if (
-            rrule.freq !== "YEARLY" &&
-            rrule.freq !== "MONTHLY" &&
-            rrule.freq !== "WEEKLY" &&
-            rrule.freq !== "DAILY"
+            rrule.freq !== 'YEARLY' &&
+            rrule.freq !== 'MONTHLY' &&
+            rrule.freq !== 'WEEKLY' &&
+            rrule.freq !== 'DAILY'
           ) {
             throw "Recurrence rrule frequency must be provided and be one of the following: 'YEARLY', 'MONTHLY', 'WEEKLY', or 'DAILY'";
           }
@@ -269,9 +269,9 @@ export let ics = function (uidDomain, prodId) {
             }
           }
 
-          if (typeof rrule.byday !== "undefined") {
+          if (typeof rrule.byday !== 'undefined') {
             if (
-              Object.prototype.toString.call(rrule.byday) !== "[object Array]"
+              Object.prototype.toString.call(rrule.byday) !== '[object Array]'
             ) {
               throw "Recurrence rrule 'byday' must be an array";
             }
@@ -299,32 +299,32 @@ export let ics = function (uidDomain, prodId) {
       var end_date = new Date(stop);
       var now_date = new Date();
 
-      var start_year = ("0000" + start_date.getFullYear().toString()).slice(-4);
-      var start_month = ("00" + (start_date.getMonth() + 1).toString()).slice(
+      var start_year = ('0000' + start_date.getFullYear().toString()).slice(-4);
+      var start_month = ('00' + (start_date.getMonth() + 1).toString()).slice(
         -2,
       );
-      var start_day = ("00" + start_date.getDate().toString()).slice(-2);
-      var start_hours = ("00" + start_date.getHours().toString()).slice(-2);
-      var start_minutes = ("00" + start_date.getMinutes().toString()).slice(-2);
-      var start_seconds = ("00" + start_date.getSeconds().toString()).slice(-2);
+      var start_day = ('00' + start_date.getDate().toString()).slice(-2);
+      var start_hours = ('00' + start_date.getHours().toString()).slice(-2);
+      var start_minutes = ('00' + start_date.getMinutes().toString()).slice(-2);
+      var start_seconds = ('00' + start_date.getSeconds().toString()).slice(-2);
 
-      var end_year = ("0000" + end_date.getFullYear().toString()).slice(-4);
-      var end_month = ("00" + (end_date.getMonth() + 1).toString()).slice(-2);
-      var end_day = ("00" + end_date.getDate().toString()).slice(-2);
-      var end_hours = ("00" + end_date.getHours().toString()).slice(-2);
-      var end_minutes = ("00" + end_date.getMinutes().toString()).slice(-2);
-      var end_seconds = ("00" + end_date.getSeconds().toString()).slice(-2);
+      var end_year = ('0000' + end_date.getFullYear().toString()).slice(-4);
+      var end_month = ('00' + (end_date.getMonth() + 1).toString()).slice(-2);
+      var end_day = ('00' + end_date.getDate().toString()).slice(-2);
+      var end_hours = ('00' + end_date.getHours().toString()).slice(-2);
+      var end_minutes = ('00' + end_date.getMinutes().toString()).slice(-2);
+      var end_seconds = ('00' + end_date.getSeconds().toString()).slice(-2);
 
-      var now_year = ("0000" + now_date.getFullYear().toString()).slice(-4);
-      var now_month = ("00" + (now_date.getMonth() + 1).toString()).slice(-2);
-      var now_day = ("00" + now_date.getDate().toString()).slice(-2);
-      var now_hours = ("00" + now_date.getHours().toString()).slice(-2);
-      var now_minutes = ("00" + now_date.getMinutes().toString()).slice(-2);
-      var now_seconds = ("00" + now_date.getSeconds().toString()).slice(-2);
+      var now_year = ('0000' + now_date.getFullYear().toString()).slice(-4);
+      var now_month = ('00' + (now_date.getMonth() + 1).toString()).slice(-2);
+      var now_day = ('00' + now_date.getDate().toString()).slice(-2);
+      var now_hours = ('00' + now_date.getHours().toString()).slice(-2);
+      var now_minutes = ('00' + now_date.getMinutes().toString()).slice(-2);
+      var now_seconds = ('00' + now_date.getSeconds().toString()).slice(-2);
 
       // Since some calendars don't add 0 second events, we need to remove time if there is none...
-      var start_time = "";
-      var end_time = "";
+      var start_time = '';
+      var end_time = '';
       if (
         start_hours +
           start_minutes +
@@ -334,10 +334,10 @@ export let ics = function (uidDomain, prodId) {
           end_seconds !=
         0
       ) {
-        start_time = "T" + start_hours + start_minutes + start_seconds;
-        end_time = "T" + end_hours + end_minutes + end_seconds;
+        start_time = 'T' + start_hours + start_minutes + start_seconds;
+        end_time = 'T' + end_hours + end_minutes + end_seconds;
       }
-      var now_time = "T" + now_hours + now_minutes + now_seconds;
+      var now_time = 'T' + now_hours + now_minutes + now_seconds;
 
       var start = start_year + start_month + start_day + start_time;
       var end = end_year + end_month + end_day + end_time;
@@ -349,26 +349,26 @@ export let ics = function (uidDomain, prodId) {
         if (rrule.rrule) {
           rruleString = rrule.rrule;
         } else {
-          rruleString = "RRULE:FREQ=" + rrule.freq;
+          rruleString = 'RRULE:FREQ=' + rrule.freq;
 
           if (rrule.until) {
             var uDate = new Date(Date.parse(rrule.until)).toISOString();
             rruleString +=
-              ";UNTIL=" +
-              uDate.substring(0, uDate.length - 13).replace(/[-]/g, "") +
-              "000000Z";
+              ';UNTIL=' +
+              uDate.substring(0, uDate.length - 13).replace(/[-]/g, '') +
+              '000000Z';
           }
 
           if (rrule.interval) {
-            rruleString += ";INTERVAL=" + rrule.interval;
+            rruleString += ';INTERVAL=' + rrule.interval;
           }
 
           if (rrule.count) {
-            rruleString += ";COUNT=" + rrule.count;
+            rruleString += ';COUNT=' + rrule.count;
           }
 
           if (rrule.byday && rrule.byday.length > 0) {
-            rruleString += ";BYDAY=" + rrule.byday.join(",");
+            rruleString += ';BYDAY=' + rrule.byday.join(',');
           }
         }
       }
@@ -376,17 +376,17 @@ export let ics = function (uidDomain, prodId) {
       var stamp = new Date().toISOString();
 
       var calendarEvent = [
-        "BEGIN:VEVENT",
-        "UID:" + calendarEvents.length + "@" + uidDomain,
-        "CLASS:PUBLIC",
-        "DESCRIPTION:" + description,
-        "DTSTAMP;VALUE=DATE-TIME:" + now,
-        "DTSTART;VALUE=DATE-TIME:" + start,
-        "DTEND;VALUE=DATE-TIME:" + end,
-        "LOCATION:" + location,
-        "SUMMARY;LANGUAGE=en-us:" + subject,
-        "TRANSP:TRANSPARENT",
-        "END:VEVENT",
+        'BEGIN:VEVENT',
+        'UID:' + calendarEvents.length + '@' + uidDomain,
+        'CLASS:PUBLIC',
+        'DESCRIPTION:' + description,
+        'DTSTAMP;VALUE=DATE-TIME:' + now,
+        'DTSTART;VALUE=DATE-TIME:' + start,
+        'DTEND;VALUE=DATE-TIME:' + end,
+        'LOCATION:' + location,
+        'SUMMARY;LANGUAGE=en-us:' + subject,
+        'TRANSP:TRANSPARENT',
+        'END:VEVENT',
       ];
 
       if (rruleString) {
@@ -409,8 +409,8 @@ export let ics = function (uidDomain, prodId) {
         return false;
       }
 
-      ext = typeof ext !== "undefined" ? ext : ".ics";
-      filename = typeof filename !== "undefined" ? filename : "calendar";
+      ext = typeof ext !== 'undefined' ? ext : '.ics';
+      filename = typeof filename !== 'undefined' ? filename : 'calendar';
       var calendar =
         calendarStart +
         SEPARATOR +
@@ -418,14 +418,14 @@ export let ics = function (uidDomain, prodId) {
         calendarEnd;
 
       var blob;
-      if (navigator.userAgent.indexOf("MSIE 10") === -1) {
+      if (navigator.userAgent.indexOf('MSIE 10') === -1) {
         // chrome or firefox
         blob = new Blob([calendar]);
       } else {
         // ie
         var bb = new BlobBuilder();
         bb.append(calendar);
-        blob = bb.getBlob("text/x-vCalendar;charset=" + document.characterSet);
+        blob = bb.getBlob('text/x-vCalendar;charset=' + document.characterSet);
       }
       saveAs(blob, filename + ext);
       return calendar;

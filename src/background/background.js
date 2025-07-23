@@ -10,14 +10,14 @@ async function sendContentMessage(message) {
       return (tabId = tabs[0].id);
     })
     .then((tabId) => chrome.tabs.sendMessage(tabId, message))
-    .then(() => console.log("sent message"))
+    .then(() => console.log('sent message'))
     .catch((_) => {
       console.log(
-        "content script not installed, installing and sending message",
+        'content script not installed, installing and sending message',
       );
       chrome.scripting.executeScript({
         target: { tabId: tabId },
-        files: ["../content/content.js"],
+        files: ['../content/content.js'],
       });
       setTimeout(() => {
         chrome.tabs.sendMessage(tabId, message);
@@ -32,8 +32,8 @@ chrome.runtime.onMessage.addListener((req) => {
   }
 
   if (
-    (("urlMatch" in req && "login" in req) || // webpage check
-      ("success" in req && "error" in req)) && // submission check
+    (('urlMatch' in req && 'login' in req) || // webpage check
+      ('success' in req && 'error' in req)) && // submission check
     !req.popup // make sure the message is meant for the popup
   ) {
     setTimeout(() => chrome.runtime.sendMessage({ ...req, popup: true }), 50);
