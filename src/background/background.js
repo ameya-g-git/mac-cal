@@ -10,7 +10,7 @@ async function sendContentMessage(message) {
       return (tabId = tabs[0].id);
     })
     .then((tabId) => chrome.tabs.sendMessage(tabId, message))
-    .then(() => console.log('sent message'))
+    .then(() => console.log('sent message', message))
     .catch((_) => {
       console.log(
         'content script not installed, installing and sending message',
@@ -21,7 +21,7 @@ async function sendContentMessage(message) {
       });
       setTimeout(() => {
         chrome.tabs.sendMessage(tabId, message);
-      }, 100);
+      }, 50);
     });
 }
 
@@ -37,6 +37,5 @@ chrome.runtime.onMessage.addListener((req) => {
     !req.popup // make sure the message is meant for the popup
   ) {
     setTimeout(() => chrome.runtime.sendMessage({ ...req, popup: true }), 50);
-    return false;
   }
 });
