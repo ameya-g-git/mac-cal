@@ -30,8 +30,10 @@ import { generateICS } from "./generate_ics.js";
     if (request.nameFormat && request.includeLoc)
       try {
         generateICS(request.nameFormat, request.includeLoc);
+        chrome.runtime.sendMessage({ success: true, error: "" });
       } catch (e) {
         console.error(e);
+        chrome.runtime.sendMessage({ success: false, error: e.message });
       }
     return true;
   }
