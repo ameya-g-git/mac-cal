@@ -52,12 +52,6 @@ function calcNewStartDate(begin, days) {
   return begin.getDate() + dayDelta;
 }
 
-// async function loadScript(src) {
-//     const parseSrc = await chrome.runtime.getURL(src);
-//     const parseScript = await import(parseSrc);
-//     return parseScript;
-// }
-
 function parseFormat(format, classData) {
   let output = [];
   let specCode = '';

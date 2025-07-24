@@ -21,12 +21,11 @@ async function sendContentMessage(message) {
       });
       setTimeout(() => {
         chrome.tabs.sendMessage(tabId, message);
-      }, 50);
+      }, 100);
     });
 }
 
 chrome.runtime.onMessage.addListener((req) => {
-  console.log(req);
   if ((req.nameFormat && req.includeLoc) || req.start) {
     sendContentMessage(req);
   }
@@ -36,6 +35,6 @@ chrome.runtime.onMessage.addListener((req) => {
       ('success' in req && 'error' in req)) && // submission check
     !req.popup // make sure the message is meant for the popup
   ) {
-    setTimeout(() => chrome.runtime.sendMessage({ ...req, popup: true }), 50);
+    setTimeout(() => chrome.runtime.sendMessage({ ...req, popup: true }), 100);
   }
 });

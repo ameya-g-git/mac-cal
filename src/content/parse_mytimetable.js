@@ -4,13 +4,15 @@ export default function parse() {
   );
 
   function legendTimeToRecur(legTime, year) {
-    const [days, time] = legTime.split(': ').map((t) => t.trim());
+    const [days, time] = legTime
+      .split(/:\s+/)
+      .map((t) => t.replace(/[\t\r\n\f\v]/g, ' ').trim());
     let begin, end;
 
-    const dayArray = days.split(', ').map((d) => d.toUpperCase());
+    const dayArray = days.split(',').map((d) => d.trim().toUpperCase());
 
     // only the case if begin + end is included
-    if (dayArray.length !== days.split(' ').length) {
+    if (dayArray.length !== days.split(/\s+/).length) {
       const lastElem = dayArray[dayArray.length - 1];
 
       // if begin + end is included, lastElem looks something like 'THU MAY 5 - JUN 13'
@@ -22,7 +24,7 @@ export default function parse() {
       end = new Date(`${dates.split(' - ')[1]} ${year}`);
     }
 
-    const times = time.split(' to ');
+    const times = time.split(/\s+to\s+/);
 
     return {
       freq: {
@@ -35,14 +37,28 @@ export default function parse() {
   }
 
   function parseRooms(roomElem) {
-    let rooms;
+    let rooms = [];
 
     if (roomElem.querySelector('.legend_multi_loc')) {
       rooms = Array.from(roomElem.querySelectorAll('.legend_multi_loc')).map(
-        (r) => r.textContent.split(' - ')[1].replace('_', ' '),
+        (r) =>
+          r.textContent
+            .split('-')[1]
+            .replace(/\s+/, ' ')
+            .trim()
+            .replace('_', ' '),
       );
     } else {
-      rooms = [roomElem.textContent.split(' - ')[1].replace('_', ' ')];
+      for (let i = 0; i < 3; i++) {
+        // in case a particular classType has multiple timings but in the same room
+        rooms.push(
+          roomElem.textContent
+            .split('-')[1]
+            .replace(/\s+/, ' ')
+            .trim()
+            .replace('_', ' '),
+        );
+      }
     }
 
     return rooms;
@@ -57,11 +73,13 @@ export default function parse() {
     const header = course.querySelector('.header_cell');
     const courseTitle = header.querySelector('.course_title');
 
-    const [sem, dates] = courseTitle.nextElementSibling.textContent.split(': ');
+    const [sem, dates] = courseTitle.nextElementSibling.textContent
+      .split(':')
+      .map((s) => s.replace(/\s+/g, ' ').trim());
 
     const [begin, end] = dates // course start and end dates in the format `Month D YY`
-      .split(' - ')
-      .map((d) => new Date(`${d} ${sem.split(' ')[0]}`));
+      .split(/\s+-\s+/)
+      .map((d) => new Date(`${d} ${sem.slice(0, 4)}`));
 
     data.sem = sem.toLowerCase().replace('/', '');
 
@@ -73,7 +91,7 @@ export default function parse() {
     // goes in the order of LEC, LAB, TUT
     const classOrder = Array.from(
       selectedClasses.querySelectorAll('strong.type_block'),
-    ).map((elem) => elem.textContent);
+    ).map((elem) => elem.textContent.replace(/\s+/g, ' ').trim());
 
     const roomOrder = Array.from(
       selectedClasses.querySelectorAll('.location_block'),
@@ -112,12 +130,12 @@ export default function parse() {
         data.classes.push({
           begin,
           end,
-          name: courseTitle.textContent,
+          name: courseTitle.textContent.replace(/\s+/g, ' ').trim(),
           classType,
           classSec,
           prof: profOrder[i],
           loc: roomOrder[i][ti], // every time has a corresponding room
-          ...legendTimeToRecur(t, year),
+          ...legendTimeToRecur(t, Number(year)),
           // legendTimeToRecur returns an object of type { freq: { ... }, begin?: Date, end?: Date }
         }),
       );

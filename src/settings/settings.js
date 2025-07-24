@@ -5,14 +5,16 @@ async function verifyURL() {
       currentWindow: true,
     })
     .then((tabs) => {
-      url = tabs[0].url;
-      if (!url.match(/.*:\/\/mytimetable\.mcmaster\.ca/)) {
+      const { url } = tabs[0];
+      if (
+        !url.match(/.*:\/\/mytimetable\.mcmaster\.ca/) &&
+        !url.match(/.*:\/\/ameyagupta\.netlify\.app/)
+      ) {
         document.getElementById('popup-content').style.display = 'none';
         document.getElementById('wrong-page-content').style.display = 'flex';
         throw new Error('Wrong website!');
       }
     });
-  return url;
 }
 
 function parseFormat(format) {
@@ -71,7 +73,6 @@ let contentState = {
 };
 
 let error = null;
-let success = false;
 
 function handleMessage(request) {
   if (!request.popup) return false;
@@ -112,14 +113,11 @@ window.addEventListener('pageshow', () => {
     }
 
     if (error !== null && error.length > 0) {
-      console.log(error);
       document.getElementById('error').innerText = 'Error occurred. ' + error;
       document.getElementById('error').style.display = 'block';
     } else {
       document.getElementById('error').style.display = 'none';
     }
-
-    if (success) window.close();
   }, 16);
 
   infoModal.addEventListener('mouseenter', () => {
