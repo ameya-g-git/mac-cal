@@ -1,11 +1,11 @@
-const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const TransformJson = require("transform-json-webpack-plugin");
-const package = require("./package.json");
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TransformJson = require('transform-json-webpack-plugin');
+const package = require('./package.json');
 
 const _resolve = {
-  extensions: [".js"],
-  modules: [path.resolve(__dirname, "node_modules"), "node_modules"],
+  extensions: ['.js'],
+  modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
 };
 
 const _module = {
@@ -25,10 +25,10 @@ const _module = {
       test: /\.css$/,
       use: [
         {
-          loader: "style-loader", // creates style nodes from JS strings
+          loader: 'style-loader', // creates style nodes from JS strings
         },
         {
-          loader: "css-loader", // translates CSS into CommonJS,
+          loader: 'css-loader', // translates CSS into CommonJS,
         },
       ],
     },
@@ -37,26 +37,27 @@ const _module = {
 
 module.exports = [
   {
-    devtool: "source-map",
-    entry: [path.resolve(__dirname, "src", "background", "background.js")],
+    mode: 'production',
+    devtool: 'source-map',
+    entry: [path.resolve(__dirname, 'src', 'background', 'background.js')],
     output: {
       // build to the extension src vendor directory
-      path: path.resolve(__dirname, "build"),
-      filename: path.join("background", "background.js"),
+      path: path.resolve(__dirname, 'build'),
+      filename: path.join('background', 'background.js'),
     },
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.resolve(__dirname, "src", "static", "**", "*"),
-            to: "./",
-            context: "./src/",
+            from: path.resolve(__dirname, 'src', 'static', '**', '*'),
+            to: './',
+            context: './src/',
           },
         ],
       }),
       new TransformJson({
-        source: path.resolve(__dirname, "src", "manifest.json"),
-        filename: "manifest.json",
+        source: path.resolve(__dirname, 'src', 'manifest.json'),
+        filename: 'manifest.json',
         object: {
           description: package.description,
           version: package.version,
@@ -68,24 +69,26 @@ module.exports = [
     watch: true,
   },
   {
-    devtool: "source-map",
-    entry: [path.resolve(__dirname, "src", "settings", "settings.js")],
+    mode: 'production',
+    devtool: 'source-map',
+    entry: [path.resolve(__dirname, 'src', 'settings', 'settings.js')],
     output: {
       // build to the extension src vendor directory
-      path: path.resolve(__dirname, "build"),
-      filename: path.join("settings", "settings.js"),
+      path: path.resolve(__dirname, 'build'),
+      filename: path.join('settings', 'settings.js'),
     },
     resolve: _resolve,
     module: _module,
     watch: true,
   },
   {
-    devtool: "source-map",
-    entry: [path.resolve(__dirname, "src", "content", "content.js")],
+    mode: 'production',
+    devtool: 'source-map',
+    entry: [path.resolve(__dirname, 'src', 'content', 'content.js')],
     output: {
       // build to the extension src vendor directory
-      path: path.resolve(__dirname, "build"),
-      filename: path.join("content", "content.js"),
+      path: path.resolve(__dirname, 'build'),
+      filename: path.join('content', 'content.js'),
     },
     resolve: _resolve,
     module: _module,
