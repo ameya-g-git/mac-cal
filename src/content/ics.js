@@ -236,7 +236,12 @@ export let ics = function (uidDomain, prodId) {
         typeof begin === 'undefined' ||
         typeof stop === 'undefined'
       ) {
-        return false;
+        const params = { subject, description, location, begin, stop };
+
+        for (const p in params) {
+          if (typeof params[p] === 'undefined')
+            throw 'Undefined parameter: ' + p;
+        }
       }
 
       // validate rrule
@@ -385,7 +390,6 @@ export let ics = function (uidDomain, prodId) {
         'DTEND;VALUE=DATE-TIME:' + end,
         'LOCATION:' + location,
         'SUMMARY;LANGUAGE=en-us:' + subject,
-        'TRANSP:TRANSPARENT',
         'END:VEVENT',
       ];
 
