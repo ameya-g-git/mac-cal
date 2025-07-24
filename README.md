@@ -1,9 +1,9 @@
 # MacCal
 A browser extension that generates an .ics (calendar) file using the details on your MyTimetable page!
 
-Accounts for sessional dates, ensuring your calendar only shows dates that class actually occurs! 
+Accounts for sessional dates, ensuring your calendar only shows dates that class actually occurs! (save for unexpected circumstances like weather, obviously)
 
-(save for unexpected circumstances like weather, obviously)
+**(not affiliated with McMaster University! just made by someone who uses their calendar a lot)**
 
 ## Usage
 Fortunately, the extension is very simple to use!
@@ -25,8 +25,8 @@ Information is read from the webpage once you click "Generate Calendar" and is n
 ## Development / Troubleshooting
 Dealing with errors? Hate my code? Want to add another statuatory holiday that you observe? Raise an issue on this GitHub page, or fix it yourself! Here's how to get started.
 
-Node: >=18.12.0
-NPM: >=8.19.2
+Node: version>=18.12.0<br>
+NPM: version>=8.19.2
 
 Clone the repo locally:
 ```sh
@@ -50,7 +50,7 @@ And now you're all set to get started! Some information about the file structure
 - `/build`: The bundled Webpack code
 - `/node_modules`: Yaknow
 - `/src`: The meat of the extension.
-  - `/background`: The background script for the extension. Receives the submit event from the popup and sends the appropriate information to the content script
+  - `/background`: The background script for the extension. Receives and transmits messages between the content scripts and the popup script.
   - `/content`: Content scripts. Read the webpage and generate the `.ics` file
     - `/date_utils`: A ton of small functions that calculate given statuatory holidays relating to McMaster's sessional dates
   - `/settings`: The JS file that deals with interaction on the popup.
