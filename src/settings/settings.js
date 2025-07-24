@@ -6,10 +6,7 @@ async function verifyURL() {
     })
     .then((tabs) => {
       const { url } = tabs[0];
-      if (
-        !url.match(/.*:\/\/mytimetable\.mcmaster\.ca/) &&
-        !url.match(/.*:\/\/ameyagupta\.netlify\.app/)
-      ) {
+      if (!url.match(/.*:\/\/mytimetable\.mcmaster\.ca/)) {
         document.getElementById('popup-content').style.display = 'none';
         document.getElementById('wrong-page-content').style.display = 'flex';
         throw new Error('Wrong website!');
@@ -70,18 +67,19 @@ function parseFormat(format) {
 let contentState = {
   urlMatch: false,
   login: false,
+  semSelected: false,
 };
 
 let error = null;
 
 function handleMessage(request) {
+  console.log('settings', request);
   if (!request.popup) return false;
 
-  if ('urlMatch' in request && 'login' in request)
+  if ('urlMatch' in request && 'login' in request && 'semSelected' in request)
     contentState = { ...request };
-  else if ('success' in request && 'error' in request) {
+  else if ('error' in request) {
     error = request.error;
-    success = request.success;
   } else {
     return false;
   }
@@ -100,16 +98,22 @@ window.addEventListener('pageshow', () => {
   const roomLoc = document.getElementById('room-loc');
 
   setInterval(() => {
-    if (!contentState.login) {
+    const disclaimer = document.getElementById('disclaimer');
+    if (!contentState.login || !contentState.semSelected) {
       document.querySelectorAll('input, button').forEach((elem) => {
         elem.disabled = true;
       });
-      document.getElementById('disclaimer').style.display = 'block';
+
+      if (!contentState.login) disclaimer.innerText = '(sign in first!)';
+      else if (!contentState.semSelected)
+        disclaimer.innerText = '(select a semester!)';
+
+      disclaimer.style.display = 'block';
     } else {
       document.querySelectorAll('input, button').forEach((elem) => {
         elem.disabled = false;
       });
-      document.getElementById('disclaimer').style.display = 'none';
+      disclaimer.style.display = 'none';
     }
 
     if (error !== null && error.length > 0) {
