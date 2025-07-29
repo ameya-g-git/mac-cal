@@ -17,7 +17,7 @@ async function sendContentMessage(message) {
       );
       chrome.scripting.executeScript({
         target: { tabId: tabId },
-        files: ['../content/content.js'],
+        files: ['content/content.js'],
       });
       setTimeout(() => {
         chrome.tabs.sendMessage(tabId, message);
