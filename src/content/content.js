@@ -21,7 +21,7 @@ import { generateICS } from './generate_ics.js';
       } else if (
         // document.getElementById('welcomeTerms').style.display !== '' &&
         // document.getElementById('welcomeTerms').style.display !== 'none'
-        document.querySelector('.reg_term').style.display !== 'none'
+        document.querySelector('.reg_term').offsetParent !== null
       ) {
         chrome.runtime.sendMessage({
           urlMatch: true,
