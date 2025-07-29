@@ -13,7 +13,7 @@
     "128": "static/icons/maccal_icon128.png"
   },
 
-  "page_action": {
+  "action": {
     "show_matches": ["*://mytimetable.mcmaster.ca/*"],
     "default_icon": {
       "16": "static/icons/maccal_icon16.png",
