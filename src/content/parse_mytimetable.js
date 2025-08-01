@@ -90,7 +90,9 @@ export default function parse() {
       '.inner_legend_table:has(.is-checked)',
     );
 
-    // goes in the order of LEC, LAB, TUT
+    // turns out the order of this isn't consistent
+    // why
+    // TUT is last all the time i Think
     const classOrder = Array.from(
       selectedClasses.querySelectorAll('strong.type_block'),
     ).map((elem) => elem.textContent.replace(/\s+/g, ' ').trim());
@@ -113,15 +115,33 @@ export default function parse() {
     // yes this is annoying enough to have to be done in a separate variable
     let classTimesOrder = [classTimes];
 
-    if (classOrder.length == 2) {
-      classTimesOrder = [
-        classTimes.length == 2 // LEC or LAB times can take up to 2 lines, this accounts for that
-          ? [classTimes[0]]
-          : classTimes.slice(0, 2),
-        [classTimes[classTimes.length - 1]],
-      ];
+    if (classOrder.length === 2) {
+      if (classTimes.length === 1) {
+        //  "Thu, Wed : 10:30 AM to 11:20 AM"
+        const [days, times] = classTimes[0].split(' : ');
+
+        // there's a nonzero chance that this mapping is actually Wrong
+        // and that there's a case that 3 days show up in one line
+        // i haven't seen what that would look like and how i should account for that
+        // soooooooo
+        classTimesOrder = days.split(', ').map((d) => [`${d} : ${times}`]);
+      } else {
+        const split =
+          classOrder[0].includes('LEC') && classTimes.length > 2 ? 2 : 1;
+
+        classTimesOrder = [classTimes.slice(0, split), classTimes.slice(split)];
+      }
     } else if (classOrder.length == 3) {
-      classTimesOrder = classTimes.map((cls) => [cls]);
+      const split1 =
+        classOrder[0].includes('LEC') && classTimes.length > 3 ? 2 : 1;
+      const split2 =
+        classOrder[1].includes('LEC') && classTimes.length - split1 > 2 ? 2 : 1;
+
+      classTimesOrder = [
+        classTimes.slice(0, split1),
+        classTimes.slice(split1, split2),
+        classTimes.slice(split2),
+      ];
     }
 
     classTimesOrder.forEach((times, i) => {
@@ -143,6 +163,8 @@ export default function parse() {
       );
     });
   }
+
+  console.log(data);
 
   return data;
 }

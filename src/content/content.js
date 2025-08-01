@@ -3,7 +3,6 @@ import { generateICS } from './generate_ics.js';
 (() => {
   function handleMessage(request, sender, sendResponse) {
     if (request.start) {
-      console.log(document.getElementById('welcomeTerms'));
       if (!window.location.href.match(/.*:\/\/mytimetable\.mcmaster\.ca.*/)) {
         // wrong url
         chrome.runtime.sendMessage({

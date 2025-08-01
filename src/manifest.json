@@ -36,5 +36,5 @@
     "extension_pages": "default-src 'self'"
   },
 
-  "permissions": ["activeTab", "downloads", "scripting"]
+  "permissions": ["activeTab", "scripting"]
 }
