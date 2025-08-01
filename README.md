@@ -39,7 +39,7 @@ Install dependencies:
 npm install
 ```
 
-Run the Webpack watch script to compile on file changes:
+Run the Webpack watch script to rebundle the code on file changes:
 ```sh
 npm run watch
 ```
