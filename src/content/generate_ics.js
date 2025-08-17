@@ -209,7 +209,7 @@ export function generateICS(nameFormat, includeLoc) {
       cal.addEvent(
         eventName,
         '',
-        includeLoc ? loc : '',
+        includeLoc && loc ? loc : '',
         `${clsBegin.toDateString()} ${startTime}`,
         `${clsBegin.toDateString()} ${endTime}`,
         rrule,

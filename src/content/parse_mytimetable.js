@@ -32,31 +32,23 @@ function legendTimeToRecur(legTime, year) {
 }
 
 function parseRooms(roomElem) {
-  let rooms = [];
-
   if (roomElem.querySelector('.legend_multi_loc')) {
-    rooms = Array.from(roomElem.querySelectorAll('.legend_multi_loc')).map(
-      (r) =>
-        r.textContent
-          .split('-')[1]
-          .replace(/\s+/, ' ')
-          .trim()
-          .replace('_', ' '),
+    return Array.from(
+      roomElem.querySelectorAll(roomElem.querySelector('.legend_multi_loc')),
+    ).map((r) =>
+      r.textContent.split('-')[1].replace(/\s+/, ' ').trim().replace('_', ' '),
     );
   } else if (roomElem.textContent.length > 0) {
-    for (let i = 0; i < 3; i++) {
-      // in case a particular classType has multiple timings but in the same room
-      rooms.push(
-        roomElem.textContent
-          .split('-')[1]
-          .replace(/\s+/, ' ')
-          .trim()
-          .replace('_', ' '),
-      );
-    }
+    return [
+      roomElem.textContent
+        .split('-')[1]
+        .replace(/\s+/, ' ')
+        .trim()
+        .replace('_', ' '),
+    ];
   }
 
-  return rooms.length > 0 ? rooms : ['', '', ''];
+  return [''];
 }
 
 export default function parse() {
@@ -90,6 +82,12 @@ export default function parse() {
       '.inner_legend_table:has(.is-checked)',
     );
 
+    // im Assuming courses only have 1 TUT timing section Please : )
+    const classTimes = header
+      .querySelector('#hoursInLegend') // evil how they use the same id per course
+      .innerHTML.split('<br>')
+      .slice(0, -1);
+
     // turns out the order of this isn't consistent
     // why
     // TUT is last all the time i Think
@@ -97,23 +95,16 @@ export default function parse() {
       selectedClasses.querySelectorAll('strong.type_block'),
     ).map((elem) => elem.textContent.replace(/\s+/g, ' ').trim());
 
-    const roomOrder = Array.from(
-      selectedClasses.querySelectorAll('.location_block'),
-    ).map((elem) => parseRooms(elem));
-
     const profOrder = Array.from(
       selectedClasses.querySelectorAll("[title*='Instructor']"),
     ).map((elem) => elem.textContent);
 
-    // im Assuming courses only have 1 TUT timing section Please : )
-    const classTimes = header
-      .querySelector('#hoursInLegend') // evil how they use the same id per course
-      .innerHTML.split('<br>')
-      .slice(0, -1);
-
     // holds an array of class times, separated per class in a subarray
     // yes this is annoying enough to have to be done in a separate variable
     let classTimesOrder = [classTimes];
+
+    // TODO: from what i've seen  only labs really have that issue regarding biweekly classes
+    // so... if i see that   only give the lecture min(2, number of non-ranged dates) lines
 
     if (classOrder.length === 2) {
       if (classTimes.length === 1) {
@@ -127,15 +118,21 @@ export default function parse() {
         classTimesOrder = days.split(', ').map((d) => [`${d} : ${times}`]);
       } else {
         const split =
-          classOrder[0].includes('LEC') && classTimes.length > 2 ? 2 : 1;
+          classOrder[0].includes('LEC') &&
+          classTimes.length > 2 && // make sure there are enough classes to give LECs 2 lines
+          !classTimes[1].includes('-') // usually, LECs aren't represented using date ranges
+            ? 2
+            : 1;
 
         classTimesOrder = [classTimes.slice(0, split), classTimes.slice(split)];
       }
     } else if (classOrder.length == 3) {
       const split1 =
         classOrder[0].includes('LEC') && classTimes.length > 3 ? 2 : 1;
+
+      // TODO: what does this split2 mean, changed it to lab?? will see if this breaks anything
       const split2 =
-        classOrder[1].includes('LEC') && classTimes.length - split1 > 2 ? 2 : 1;
+        classOrder[1].includes('LAB') && classTimes.length - split1 > 2 ? 2 : 1;
 
       classTimesOrder = [
         classTimes.slice(0, split1),
@@ -143,6 +140,12 @@ export default function parse() {
         classTimes.slice(split2),
       ];
     }
+
+    const roomOrder = Array.from(
+      selectedClasses.querySelectorAll('.location_block'),
+    ).map((elem, i) => Array(classTimesOrder[i].length).fill(parseRooms(elem)));
+
+    console.log(courseTitle.textContent, roomOrder);
 
     classTimesOrder.forEach((times, i) => {
       const [classType, classSec] = classOrder[i].split(' ');
